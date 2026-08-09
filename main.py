@@ -70,8 +70,8 @@ def main() -> None:
 		print("Invalid token. Please try again.\n")
 
 
-	# Listens ---
-	if (ask_yes_no("Import your listens (listening history)?")):
+	# Listens (Scrobbles) ---
+	if (ask_yes_no("Import your listens (scrobbles)?")):
 		clear_screen()
 		database_connection: sqlite3.Connection = sqlite3.connect(DB_PATH)
 		scrobble_rows: list[queries.Scrobble] = [queries.Scrobble(*row) for row in database_connection.execute(FETCH_SCROBBLES).fetchall()]
@@ -91,7 +91,7 @@ def main() -> None:
 		print("\n\nDone submitting listens.")
 
 
-	# Favourites ---
+	# Favourites (Feedback) ---
 	if (ask_yes_no("Import your favourites (feedback)?")):
 		clear_screen()
 		database_connection: sqlite3.Connection = sqlite3.connect(DB_PATH)
