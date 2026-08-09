@@ -106,10 +106,27 @@ In *PowerShell (PS)*:
 python main.py
 ```
 
-If you are still running into issues (Sad :[ ), make sure you have installed **Python 3.10** or **higher** on your system.
+If you are still running into issues (Sad :[ ), make sure you have **Python 3.10** or **higher** installed on your system.
 
 ---
 
-Please mind that ListenBrainz may take some time to display newly imported data. If the import completed successfully, please be patient and allow anywhere from a few minutes to an hour for the changes to appear in your ListenBrainz profile.
+Please note that ListenBrainz may take some time to display newly imported data. If the import completed successfully, please be patient and allow anywhere from a few minutes to an hour for the changes to appear in your ListenBrainz profile.
+
+---
+
+## Configuration
+
+All settings live in `config.json`:
+
+|Key|Default|Description|
+|-----|---------|-------------|
+|`db_path`|`resources/navidrome.db`|Path to the Navidrome database file|
+|`listenbrainz_submit_url`|*([ListenBrainz API](https://api.listenbrainz.org/1/submit-listens))*|Endpoint to submit listens (scrobbles) to|
+|`listenbrainz_feedback_url`|*([ListenBrainz API](https://api.listenbrainz.org/1/feedback/recording-feedback))*|Endpoint to submit feedback (favourites) to|
+|`listenbrainz_validate_url`|*([ListenBrainz API](https://api.listenbrainz.org/1/validate-token))*|Endpoint to validate a token|
+|`max_submit_attempts`|`3`|Maximum number of attempts before aborting a batch or feedback|
+|`seconds_before_reattempt`|`2`|How long to wait (in seconds) before retrying before trying to submit a failed batch or feedback|
+
+The path to the **configuration file** can only be changed by directly modifying the default value of the `config_path` parameter in the `load_config` function located in `main.py`.
 
 ---

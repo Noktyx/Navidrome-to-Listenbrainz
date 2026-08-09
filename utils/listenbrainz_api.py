@@ -1,6 +1,8 @@
 import sys, time, requests
 from typing import Any
 
+import utils.queries as queries
+
 
 def wait_for_rate_limit(api_response: requests.Response, buffer_seconds: int = 1) -> None:
 	"""
@@ -44,7 +46,7 @@ def validate_token(listenbrainz_validate_url: str, token: str) -> bool:
 
 	except Exception as error:
 		print(f"Error while validating token: {error}")
-		return (False)
+		sys.exit(1)
 
 
 def submit_listens_batch(listenbrainz_submit_url: str, token: str, batch_data: list[dict[str, Any]]) -> requests.Response:
@@ -114,7 +116,7 @@ def submit_listens_batch_wrapper(
 				wait_for_rate_limit(api_response)
 				break
 			elif (attempt == (max_submit_attempts - 1)):
-				print(f"Failed after {max_submit_attempts} retries. Stopping...")
+				print(f"Batch ({batch_start_index} - {batch_end_index}) aborted as {max_submit_attempts} attempts were reached.")
 				break
 			
 			time.sleep(seconds_before_reattempt)
@@ -153,3 +155,41 @@ def submit_like(listenbrainz_feedback_url: str, token: str, musicbrainz_id: str)
 	except Exception as exception:
 		print(f"An exception was raised while attempting to send a request (to submit feedback): {exception}")
 		sys.exit(1)
+
+
+def submit_like_wrapper(
+	listenbrainz_feedback_url: str,
+	token: str,
+	formatted_favourites: list[queries.Favourite],
+	max_submit_attempts: int,
+	seconds_before_reattempt: int
+) -> None:
+	"""
+	Acts as a wrapper for the 'submit_like' function.
+
+	Args:
+		listenbrainz_feedback_url (str): The ListenBrainz feedback endpoint.
+		token (str): The ListenBrainz user token.
+		formatted_favourites (list[queries.Favourite]): All formatted favourites to submit.
+		max_submit_attempts (int): Maximum number of submission attempts per favourite.
+		seconds_before_reattempt (int): Seconds to wait before retrying a failed favourite.
+	"""
+
+	length_formatted_favourites: int = len(formatted_favourites)
+	print(f"Submitting {length_formatted_favourites} favourites (feedbacks)...")
+
+	for (count, favourite_row) in enumerate(formatted_favourites, start=1):
+		for attempt in range(0, max_submit_attempts, 1):
+			api_response: requests.Response = submit_like(listenbrainz_feedback_url, token, favourite_row.musicbrainz_id)
+			print(f"{count}. {favourite_row.artist} - \"{favourite_row.title}\"'s status code: {api_response.status_code} ({attempt+1}° attempt)")
+
+			if (api_response.ok):  #Code <400
+				wait_for_rate_limit(api_response)
+				break
+			elif (attempt == (max_submit_attempts - 1)):
+				print(f"\" {favourite_row.artist} - '{favourite_row.title}' \" aborted as {max_submit_attempts} attempts were reached.")
+				break
+
+			time.sleep(seconds_before_reattempt)
+
+	return (None)

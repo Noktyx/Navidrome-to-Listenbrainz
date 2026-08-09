@@ -1,11 +1,11 @@
-import sys, requests
+import sys
 import json, sqlite3
 from typing import Final, Any
 
 import utils.queries as queries
 from utils.queries import FETCH_SCROBBLES, FETCH_FAVOURITES
 from utils.helpers import ask_yes_no, clear_screen
-from utils.listenbrainz_api import validate_token, submit_listens_batch_wrapper, submit_like, wait_for_rate_limit
+from utils.listenbrainz_api import validate_token, submit_listens_batch_wrapper, submit_like_wrapper
 from utils.database import verify_database, do_listens, do_favourites
 
 
@@ -70,8 +70,8 @@ def main() -> None:
 		print("Invalid token. Please try again.\n")
 
 
-	# Listens (Scrobbles) ---
-	if (ask_yes_no("Import your listens (scrobbles)?")):
+	# Scrobbles (Listens) ---
+	if (ask_yes_no("Import your scrobbles (listens)?")):
 		clear_screen()
 		database_connection: sqlite3.Connection = sqlite3.connect(DB_PATH)
 		scrobble_rows: list[queries.Scrobble] = [queries.Scrobble(*row) for row in database_connection.execute(FETCH_SCROBBLES).fetchall()]
@@ -79,7 +79,7 @@ def main() -> None:
 
 		formatted_listens: list[dict[str, Any]]|None = do_listens(scrobble_rows)
 
-		if (formatted_listens != None):
+		if (formatted_listens): # != [] and != None
 			submit_listens_batch_wrapper(
 				LISTENBRAINZ_SUBMIT_URL,
 				token,
@@ -88,7 +88,7 @@ def main() -> None:
 				SECONDS_BEFORE_REATTEMPT
 			)
 
-		print("\n\nDone submitting listens.")
+		print("\n\nDone submitting scrobbles (listens).")
 
 
 	# Favourites (Feedback) ---
@@ -101,17 +101,20 @@ def main() -> None:
 		formatted_favourites: list[queries.Favourite]|None = do_favourites(favourite_rows)
 
 		if (formatted_favourites): # != [] and != None
-			print(f"Submitting {len(formatted_favourites)} feedbacks...")
+			submit_like_wrapper(
+				LISTENBRAINZ_FEEDBACK_URL,
+				token,
+				formatted_favourites,
+				MAX_SUBMIT_ATTEMPTS,
+				SECONDS_BEFORE_REATTEMPT
+			)
 
-			for count, favourite_row in enumerate(formatted_favourites, start=1):
-				api_response: requests.Response = submit_like(LISTENBRAINZ_FEEDBACK_URL, token, favourite_row.musicbrainz_id)
-				print(count, api_response.status_code, favourite_row.artist, "-", favourite_row.title)
-				wait_for_rate_limit(api_response)
+			print("\n\nDone submitting favourites (feedback).")
 		else:
 			print("No valid favourites (feedback) given.")
 
 
-	print("\n---------------------------------\nDone! :]")
+	print("---------------------------------\nDone! :]")
 
 
 

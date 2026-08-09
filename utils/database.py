@@ -101,6 +101,8 @@ def do_listens(scrobble_rows: list[queries.Scrobble]) -> list[dict[str, Any]]|No
 def do_favourites(favourite_rows: list[queries.Favourite]) -> list[queries.Favourite]|None:
 	"""
 	Filters the given favourites from the ones that cannot actually be submitted (i.e., have a MusicBrainz ID).
+	Unlike the function 'do_listens', no conversion to dict will be done, since the function 'submit_like_wrapper' 
+	builds the API payload directly from the Favourite's attributes because of how simple it is.
 
 	Args:
 		favourite_rows (list[Favourite]): The favourites (feedback).
