@@ -1,0 +1,8 @@
+{
+    "db_path": "resources/navidrome.db",
+    "listenbrainz_submit_url": "https://api.listenbrainz.org/1/submit-listens",
+    "listenbrainz_feedback_url": "https://api.listenbrainz.org/1/feedback/recording-feedback",
+    "listenbrainz_validate_url": "https://api.listenbrainz.org/1/validate-token",
+    "max_submit_attempts": 3,
+    "seconds_before_reattempt": 2
+}
