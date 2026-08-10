@@ -3,17 +3,21 @@ A simple CLI tool, made in Python, to help you import your listening history and
 
 ## Requirements
 
-- Python >= 3.10
-- The `requests` Python library
+- Python >= `3.10`
 
 ---
 
-## Setup
+## Note
 
+Please note that ListenBrainz *may take some time* to display newly imported data. If the import completed successfully, please be patient and allow anywhere from a few minutes to an hour for the changes to appear in your ListenBrainz profile.
+
+---
+
+## Guide
 
 ### 0. Locate your Navidrome database file
 
-Navidrome stores everything in a SQLite database called `navidrome.db`, kept in a folder specified in your Navidrome configuration file (`navidrome.toml`).
+Navidrome stores everything in an SQLite database called `navidrome.db`, kept in a folder specified in your Navidrome configuration file (`navidrome.toml`).
 
 If you don't remember where `navidrome.db` is located, you must find your **configuration file**. You can find your **configuration file** in your Navidrome web interface following these steps:
 
@@ -23,16 +27,18 @@ If you don't remember where `navidrome.db` is located, you must find your **conf
 2. Click **About**
 ![The 'About' button on the pop-up](media_for_readme/step_2.webp)
 
-3. And, finally, Click **Configuration**
+3. And then, finally, Click **Configuration**
 ![](media_for_readme/step_3.webp)
 
 
-The filepath of your **configuration file** (Typically named `navidrome.toml`) is shown in the first row under the *'Current Value'* column. Once you have that path, enter the **configuration file** and look for the `DataFolder` variable; that should contain the path of the folder where `navidrome.db` resides. Navigate to that folder and there you should be finally able to find `navidrome.db`. Please note that `navidrome.db-wal`, `navidrome.db-shm` or any of the sorts are not to be confused with `navidrome.db`, as those are unrelated SQLite's temporary files.
+The filepath of your **configuration file** (`navidrome.toml`) is shown in the first row under the *'Current Value'* column. Once you have that path, enter the **configuration file** and look for the `DataFolder` variable; that should contain the path of the folder where `navidrome.db` resides. Navigate to that folder and there you should be finally able to find `navidrome.db`.
+
+Please note that `navidrome.db-wal`, `navidrome.db-shm` or any of the sorts are not to be confused with `navidrome.db`, as those are unrelated SQLite's temporary files.
 
 
 ### 1. Copy your Navidrome database here
 
-Now that you've found your `navidrome.db`, copy it into this project. Place it inside the `resources/` folder located inside the project's folder (If the folder doesn't exist, create it):
+Now that you've found your `navidrome.db`, copy it inside the `resources` folder located inside this project's folder (If said folder doesn't exist, create it):
 
 ```
 Navidrome-to-Listenbrainz/
@@ -50,12 +56,12 @@ Or just put it wherever you want and update the path in the `db_path` key from `
 
 ### 2. Get your ListenBrainz token
 
-Go to your [ListenBrainz profile settings](https://listenbrainz.org/profile/) and copy your user token, or keep it for later. The tool requires it in order to function; it is requestes during the execution of the tool.
+Go to your [ListenBrainz profile settings](https://listenbrainz.org/profile/) and copy your user token, or keep it for later. The tool requires it in order to function; it is requested upon the execution of the tool.
 
 
 ### 3. Run it
 
-Open a console inside the project's folder and, depending on the setup, run
+Open a console inside this project's folder and, depending on the setup, run
 ```bash
 python main.py
 ```
@@ -66,7 +72,7 @@ python3 main.py
 
 And you should be done! The script will walk you through the rest interactively and hopefully help you.
 
-However, on the occasion that this outputs any error, using the console open in the project's folder, *run the following commands* (Which are slightly different based on your operating system):
+However, on the occasion that this outputs any error, ***run the following commands*** on the console open in this project's folder (The commands slightly vary depending on your operating system):
 
 On **Mac/Linux/FreeBSD:**
 ```bash
@@ -83,7 +89,7 @@ python -m venv .venv
 pip install -r requirements.txt
 python main.py
 ```
-(Assuming you're using the *Command Prompt (CMD)*; if you are using *PowerShell (PS)*, then you must run `venv\Scripts\Activate.ps1` as opposed to `venv\Scripts\activate`.)
+(Assuming you're using the *Command Prompt (CMD)*; if you are using *PowerShell (PS)*, then you must run `venv\Scripts\Activate.ps1` as opposed to `venv\Scripts\activate`).
 
 If this works, next time you'll want to run the program you'll only need to activate the `venv` again and run `main.py`, as such:
 
@@ -110,10 +116,6 @@ If you are still running into issues (Sad :[ ), make sure you have **Python 3.10
 
 ---
 
-Please note that ListenBrainz may take some time to display newly imported data. If the import completed successfully, please be patient and allow anywhere from a few minutes to an hour for the changes to appear in your ListenBrainz profile.
-
----
-
 ## Configuration
 
 All settings live in `config.json`:
@@ -128,5 +130,15 @@ All settings live in `config.json`:
 |`seconds_before_reattempt`|`2`|How long to wait (in seconds) before retrying to submit a failed batch or feedback|
 
 The path to the **configuration file** can only be changed by directly modifying the default value of the `config_path` parameter in the `load_config` function, located in `main.py`.
+
+---
+
+## Future Updates
+
+### Better handling of legacy listens from *before the Navidrome 0.59.0 update*
+
+As of now, the tool queries the `scrobbles` table, a feature from [Navidrome 0.59.0](https://github.com/navidrome/navidrome/releases/tag/v0.59.0) and [newer versions](https://www.navidrome.org/docs/usage/features/scrobbling/). Older Navidrome versions relied, essentially, on `play_count` and `last_played` only, in this regard. This means that people with older versions of Navidrome, or even those on newer versions but with a library containing listens from before the update, lose the play count for individual songs if higher than one.
+
+Since the script already has the capability to randomise dates, this could be leveraged for that purpose. Ergo, when no `submission_time` is found, it will, first, attempt to fall back to `play_count` and `last_played` for that specific listen and, if these fields exist and are valid, it will submit one instance of said track with the timestamp set to `last_played`; then add the remaining plays to the list of listens to randomise dates for, which is, in fact, already an existing feature. For listens that also lack these fields, the behaviour will remain the exact same as before the update of this tool.
 
 ---
