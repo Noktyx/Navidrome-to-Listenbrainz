@@ -50,12 +50,12 @@ Or just put it wherever you want and update the path in the `db_path` key from `
 
 ### 2. Get your ListenBrainz token
 
-Go to your [ListenBrainz profile settings](https://listenbrainz.org/profile/) and copy your user token. The script will ask for it when you run it.
+Go to your [ListenBrainz profile settings](https://listenbrainz.org/profile/) and copy your user token, or keep it for later. The tool requires it in order to function; it is requestes during the execution of the tool.
 
 
 ### 3. Run it
 
-Open a console inside the project's folder and, depending on your setup, run
+Open a console inside the project's folder and, depending on the setup, run
 ```bash
 python main.py
 ```
@@ -66,7 +66,7 @@ python3 main.py
 
 And you should be done! The script will walk you through the rest interactively and hopefully help you.
 
-However, on the occasion that this outputs any error, using the console open in the project's folder *run the following commands* (Which are slightly different based on your operating system):
+However, on the occasion that this outputs any error, using the console open in the project's folder, *run the following commands* (Which are slightly different based on your operating system):
 
 On **Mac/Linux/FreeBSD:**
 ```bash
@@ -85,7 +85,7 @@ python main.py
 ```
 (Assuming you're using the *Command Prompt (CMD)*; if you are using *PowerShell (PS)*, then you must run `venv\Scripts\Activate.ps1` as opposed to `venv\Scripts\activate`.)
 
-If this works, next time you'll want to run the program, you'll only need to activate the `venv` again and run `main.py`, like this:
+If this works, next time you'll want to run the program you'll only need to activate the `venv` again and run `main.py`, as such:
 
 On **Mac/Linux/FreeBSD:**
 ```bash
@@ -122,11 +122,11 @@ All settings live in `config.json`:
 |-----|---------|-------------|
 |`db_path`|`resources/navidrome.db`|Path to the Navidrome database file|
 |`listenbrainz_submit_url`|*([ListenBrainz API](https://api.listenbrainz.org/1/submit-listens))*|Endpoint to submit listens (scrobbles) to|
-|`listenbrainz_feedback_url`|*([ListenBrainz API](https://api.listenbrainz.org/1/feedback/recording-feedback))*|Endpoint to submit feedback (favourites) to|
+|`listenbrainz_feedback_url`|*([ListenBrainz API](https://api.listenbrainz.org/1/feedback/recording-feedback))*|Endpoint to submit feedbacks (favourites) to|
 |`listenbrainz_validate_url`|*([ListenBrainz API](https://api.listenbrainz.org/1/validate-token))*|Endpoint to validate a token|
 |`max_submit_attempts`|`3`|Maximum number of attempts before aborting a batch or feedback|
-|`seconds_before_reattempt`|`2`|How long to wait (in seconds) before retrying before trying to submit a failed batch or feedback|
+|`seconds_before_reattempt`|`2`|How long to wait (in seconds) before retrying to submit a failed batch or feedback|
 
-The path to the **configuration file** can only be changed by directly modifying the default value of the `config_path` parameter in the `load_config` function located in `main.py`.
+The path to the **configuration file** can only be changed by directly modifying the default value of the `config_path` parameter in the `load_config` function, located in `main.py`.
 
 ---

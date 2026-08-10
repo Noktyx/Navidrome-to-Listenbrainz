@@ -66,7 +66,7 @@ def namedtuple_to_dict(obj: Any) -> Any:
 	# 	result_dictionary: dict[str, Any] = {}
 
 	# 	for (key, value) in obj._asdict().items():
-	# 		if (value != None):		#In this case, 'additional_info' can be 'None'. If so, it is simply not added in the dict.
+	# 		if (value is not None):		#In this case, 'additional_info' can be 'None'. If so, it is simply not added in the dict.
 	# 			result_dictionary[key] = namedtuple_to_dict(value)
 
 	# 	return (result_dictionary)
@@ -75,7 +75,7 @@ def namedtuple_to_dict(obj: Any) -> Any:
 
 	if hasattr(obj, '_asdict'):
 		return {
-			key: namedtuple_to_dict(value) for (key, value) in obj._asdict().items() if (value != None)
+			key: namedtuple_to_dict(value) for (key, value) in obj._asdict().items() if (value is not None)
 		}
 
 	return (obj)
