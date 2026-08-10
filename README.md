@@ -38,7 +38,7 @@ Please note that `navidrome.db-wal`, `navidrome.db-shm` or any of the sorts are 
 
 ### 1. Copy your Navidrome database here
 
-Now that you've found your `navidrome.db`, copy it inside the `resources` folder located inside this project's folder (If said folder doesn't exist, create it):
+Now that you've found your `navidrome.db`, copy it inside the `resources` folder located inside this project's folder (If the `resources` folder doesn't exist, create it):
 
 ```
 Navidrome-to-Listenbrainz/
@@ -70,7 +70,7 @@ or
 python3 main.py
 ```
 
-And you should be done! The script will walk you through the rest interactively and hopefully help you.
+And you should be done! The tool will walk you through the rest interactively and hopefully help you.
 
 However, on the occasion that this outputs any error, ***run the following commands*** on the console open in this project's folder (The commands slightly vary depending on your operating system):
 
@@ -139,6 +139,12 @@ The path to the **configuration file** can only be changed by directly modifying
 
 As of now, the tool queries the `scrobbles` table, a feature from [Navidrome 0.59.0](https://github.com/navidrome/navidrome/releases/tag/v0.59.0) and [newer versions](https://www.navidrome.org/docs/usage/features/scrobbling/). Older Navidrome versions relied, essentially, on `play_count` and `last_played` only, in this regard. This means that people with older versions of Navidrome, or even those on newer versions but with a library containing listens from before the update, lose the play count for individual songs if higher than one.
 
-Since the script already has the capability to randomise dates, this could be leveraged for that purpose. Ergo, when no `submission_time` is found, it will, first, attempt to fall back to `play_count` and `last_played` for that specific listen and, if these fields exist and are valid, it will submit one instance of said track with the timestamp set to `last_played`; then add the remaining plays to the list of listens to randomise dates for, which is, in fact, already an existing feature. For listens that also lack these fields, the behaviour will remain the exact same as before the update of this tool.
+Since the tool already has the capability to randomise dates, this could be leveraged for that purpose. Ergo, when no `submission_time` is found, it will, first, attempt to fall back to `play_count` and `last_played` for that specific listen and, if these fields exist and are valid, it will submit one instance of said track with the timestamp set to `last_played`; then add the remaining plays to the list of listens to randomise dates for, which is, in fact, already an existing feature. For listens that also lack these fields, the behaviour will remain the exact same as before the update of this tool.
+
+---
+
+### Automatic Scheduler for Navidrome-to-ListenBrainz *Feedback (Favourites) Sync*
+
+At the time of writing this, Navidrome does not directly support sending feedback to ListenBrainz *(Which, in Navidrome terms, are favourites)*. The only way, at the moment, to update likes to ListenBrainz from Navidrome is to either manually run a script, or set up a proper scheduler app. The latter is a pretty good idea, but setting one up may not be appealing to everyone. Therefore, to provide a simpler alternative, a simple and lightweight script, using the existing functions, will act as a basic Python scheduler for this exact purpose. Keep in mind that the script will still need to be started again if the machine shuts down. Because of this, a guide will also be provided on how to have it automatically run after startup. If the machine was shut down while an execution was due to occur, the scheduler will run the tool immediately after boot, provided that the configured settings allow for it.
 
 ---
