@@ -148,3 +148,9 @@ Since the tool already has the capability to randomise dates, this could be leve
 At the time of writing this, Navidrome does not directly support sending feedback to ListenBrainz *(Which, in Navidrome terms, are favourites)*. The only way, at the moment, to update likes to ListenBrainz from Navidrome is to either manually run a script, or set up a proper scheduler app. The latter is a pretty good idea, but setting one up may not be appealing to everyone. Therefore, to provide a simpler alternative, a simple and lightweight script, using the existing functions, will act as a basic Python scheduler for this exact purpose. Keep in mind that the script will still need to be started again if the machine shuts down. Because of this, a guide will also be provided on how to have it automatically run after startup. If the machine was shut down while an execution was due to occur, the scheduler will run the tool immediately after boot, provided that the configured settings allow for it.
 
 ---
+
+### ListenBrainz to Navidrome (Listens/Scrobbles and Feedback/Favourites)
+
+Pretty self-explanatory. To evaluate at a later date (Would be pretty cool, to be honest!).
+
+---
